@@ -17,9 +17,6 @@ permissions:
 jobs:
   run:
     runs-on: ubuntu-latest
-    env:
-      # present only while bootstrapping / using token auth; empty once on OIDC
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
       - name: Checkout
@@ -32,10 +29,6 @@ jobs:
 
       - name: Ensure npm supports trusted publishing
         run: npm install -g npm@latest # OIDC trusted publishing requires npm >=11.5.1
-
-      - name: Configure npm auth (token fallback; skipped when publishing via OIDC)
-        if: ${{ env.NPM_TOKEN != '' }}
-        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ./package-files/.npmrc
 
       - name: Cache dependencies
         uses: actions/cache@v5
