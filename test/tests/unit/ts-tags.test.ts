@@ -71,6 +71,7 @@ describe('ts-tags.ts', () => {
       const context = createContext();
       context.storage.settings.tsVersion = '>=1.1.0';
       context.storage.settings.skipTags = [ 'v1.1.2' ];
+      context.storage.settings.skipPrereleases = false;
       context.storage.buildDetails.push({
         tsVersion: '1.1.3',
         tag: 'v1.1.3',
@@ -104,6 +105,20 @@ describe('ts-tags.ts', () => {
 
     test(`Tags are in proper order`, () => {
       expect(tags).toEqual([ 'v1.1.0', 'v2.3-beta', 'v2.3.1-rc', 'v2.3.1', 'v3.0.0' ]);
+    });
+
+    test(`Filters out prerelease tags when skipPrereleases is set`, () => {
+      const context = createContext();
+      context.storage.settings.tsVersion = '>=1.1.0';
+      context.storage.settings.skipTags = [];
+      context.storage.settings.skipPrereleases = true;
+      context.storage.buildDetails = [];
+
+      const stableTags = getApplicableTsTags(context);
+
+      expect(stableTags).toEqual([ 'v1.1.0', 'v1.1.2', 'v1.1.3', 'v2.3.1', 'v3.0.0' ]);
+      expect(stableTags).not.toContain('v2.3-beta');
+      expect(stableTags).not.toContain('v2.3.1-rc');
     });
   });
 });

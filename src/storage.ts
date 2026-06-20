@@ -21,6 +21,8 @@ export interface Settings {
   skipTags: string[];
   maxAttempts: number;
   tsRepoUrl: string;
+  /* when true, prerelease tags (beta/rc/dev) are skipped; defaults to false */
+  skipPrereleases?: boolean;
 }
 
 export interface Storage {

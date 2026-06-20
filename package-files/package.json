@@ -1,5 +1,5 @@
 {
-  "name": "ts-expose-internals",
+  "name": "@roblox-ts/ts-expose-internals",
   "private": true,
   "description": "Augment the TypeScript compiler module's types to expose hidden internal types",
   "version": "4.5.0-beta",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:nonara/ts-expose-internals.git"
+    "url": "git@github.com:roblox-ts/ts-expose-internals.git"
   },
   "files": [
     "index.d.ts",

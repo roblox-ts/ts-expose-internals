@@ -15,6 +15,13 @@ function semverSatisfies(tag: string, range: string): boolean {
   return semver.satisfies(tag.slice(1), range, { includePrerelease: true });
 }
 
+function isPrereleaseTag(tag: string): boolean {
+  if (tag.slice(0, 1) !== 'v') return false;
+
+  const parsed = semver.parse(fixupVersionTag(tag).slice(1));
+  return !!parsed && parsed.prerelease.length > 0;
+}
+
 // endregion
 
 
@@ -55,8 +62,11 @@ export function getApplicableTsTags(context: TseiContext): string[] {
   const { tsVersion } = context.storage.settings;
   const tsTags = module.exports.getAllTsTags(context) as string[];
 
+  const { skipPrereleases } = context.storage.settings;
+
   const tags = tsTags
     .filter(tag => semverSatisfies(tag, tsVersion)) // Matching tsVersion requirements
+    .filter(tag => !skipPrereleases || !isPrereleaseTag(tag)) // Skip prereleases when opted in
     .filter(tag => !context.storage.settings.skipTags.includes(tag)) // Not in skipTags
     .filter(tag => !context.storage.buildDetails.some(bd => bd.tag === tag && bd.complete)) // Not already built
     .sort((a, b) => semver.compare(fixupVersionTag(a), fixupVersionTag(b))); // Descending order
